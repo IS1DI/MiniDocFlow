@@ -12,8 +12,7 @@
         <maven.compiler.source>19</maven.compiler.source>
         <maven.compiler.target>19</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-framework-core.version>5.3.20</spring-framework-core.version>
-        <spring-webmvc.version>5.3.18</spring-webmvc.version>
+        <spring.version>5.3.20</spring.version>
     </properties>
     <dependencies>
 
@@ -21,14 +20,13 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>${spring-framework-core.version}</version>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>${spring-webmvc.version}</version>
+            <version>${spring.version}</version>
         </dependency>
-
         <!-- Thymeleaf -->
 
         <dependency>
