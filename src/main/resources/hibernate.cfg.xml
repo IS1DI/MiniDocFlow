@@ -5,7 +5,7 @@
 
 <hibernate-configuration>
     <session-factory>
-
+        <!-- hibernate connection -->
         <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
         <property name="connection.driver_class">org.postgresql.Driver</property>
         <property name="connection.url">jdbc:postgresql://localhost:5432/DocFlow</property>
@@ -14,15 +14,11 @@
         <property name="hibernate.show_sql">true</property>
         <property name="hbm2ddl.auto">update</property>
 
-        <mapping class = "MiniDFlow.repository.Author"/>
-        <mapping class="MiniDFlow.repository.Document"/>
-        <mapping class="MiniDFlow.repository.DocumentVersion"/>
-        <mapping class="MiniDFlow.repository.RegisterCard"/>
-
-        <!--<mapping resource = "Author.hbm.xml"/>
-        <mapping resource="Document.hbm.xml"/>
-        <mapping resource="DocumentVersion.hbm.xml"/>
-        <mapping resource="RegisterCard.hbm.xml"/> -->
+        <!-- hibernate mapping -->
+        <mapping class = "MiniDFlow.repository.entity.Author"/>
+        <mapping class="MiniDFlow.repository.entity.Document"/>
+        <mapping class="MiniDFlow.repository.entity.DocumentVersion"/>
+        <mapping class="MiniDFlow.repository.entity.RegisterCard"/>
     </session-factory>
 
 </hibernate-configuration>
