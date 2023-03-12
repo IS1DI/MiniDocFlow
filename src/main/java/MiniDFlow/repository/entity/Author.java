@@ -1,4 +1,4 @@
-package MiniDFlow.repository;
+package MiniDFlow.repository.entity;
 
 import jakarta.persistence.*;
 
