@@ -10,9 +10,6 @@ import java.util.List;
 @Repository
 public class AuthorController  implements DAOController<Author,Integer>{
 
-    @Autowired
-    private Session session;
-
     @Override
     public List<Author> getAll() {
         return null;

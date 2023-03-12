@@ -9,9 +9,6 @@ import java.util.List;
 
 @Repository
 public class RegisterCardController implements DAOController<RegisterCard,Integer>{
-    @Autowired
-    private Session session;
-
 
     @Override
     public List<RegisterCard> getAll() {

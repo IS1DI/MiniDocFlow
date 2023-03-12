@@ -10,9 +10,6 @@ import java.util.List;
 @Repository
 public class DocumentVersionController implements DAOController<DocumentVersion,Integer>{
 
-    @Autowired
-    private Session session;
-
     @Override
     public List<DocumentVersion> getAll() {
         return null;
