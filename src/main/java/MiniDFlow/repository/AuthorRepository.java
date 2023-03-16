@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Repository
@@ -21,12 +22,10 @@ public class AuthorRepository {
     /**
      * Создание нового пользователя
      *
-     * @param login:    логин пользователя
-     * @param password: пароль пользователя
-     * @param username: имя пользователя
+     * @param author Должны быть заполнены все поля
+     *               !!!КРОМЕ ID!!!
      */
-    public void create(String login, String password, String username) {
-        Author author = new Author(login, password, username);
+    public void create(Author author) {
         session.persist(author);
     }
 
@@ -47,7 +46,7 @@ public class AuthorRepository {
      * @return объект Author, соответствующий заданному имени пользователя
      */
     public Optional<Author> getByUsername(String username) {
-        String hql = "FROM Author WHERE username = :username";
+        String hql = "FROM Author WHERE Author.userName = :username";
         TypedQuery<Author> query = session.createQuery(hql, Author.class);
         query.setParameter("username", username);
         List<Author> results = query.getResultList();
@@ -63,15 +62,18 @@ public class AuthorRepository {
      *
      * @param id:          идентификатор пользователя
      * @param newUsername: новое имя пользователя
+     * @throws NoSuchElementException если не существует пользователя с таким id
      */
-    public void updateUsernameById(Integer id, String newUsername) {
+    public void updateUsernameById(Integer id, String newUsername) throws NoSuchElementException {
         Author author = getById(id);
         if (author != null) {
-            String hql = "UPDATE Author SET username = :newUsername WHERE id = :id";
+            String hql = "UPDATE Author SET Author.userName = :newUsername WHERE id = :id";
             TypedQuery<Author> query = session.createQuery(hql, Author.class);
             query.setParameter("newUsername", newUsername);
             query.setParameter("id", id);
             query.executeUpdate();
+        }else{
+            throw new NoSuchElementException("incorrect id");
         }
     }
 
@@ -81,7 +83,8 @@ public class AuthorRepository {
      *
      * @param author: объект Author с новым именем пользователя и существующим идентификатором
      */
-    public void updateUsernameByEntity(Author author) {
+    public void updateUsernameByEntity(Author author, String newUsername) {
+        author.setUserName(newUsername);
         session.merge(author);
     }
 
@@ -89,11 +92,14 @@ public class AuthorRepository {
      * Удаление пользователя из базы по id
      *
      * @param id: идентификатор пользователя
+     * @throws NoSuchElementException если не существует пользователя с таким id
      */
-    public void deleteById(Integer id) {
+    public void deleteById(Integer id) throws NoSuchElementException {
         Author author = getById(id);
         if (author != null) {
             session.remove(author);
+        }else{
+            throw new NoSuchElementException("incorrect id");
         }
     }
 
@@ -103,6 +109,8 @@ public class AuthorRepository {
      * @param author: объект Author с заданным идентификатором, который нужно удалить
      */
     public void deleteByEntity(Author author) {
-        session.remove(session.contains(author) ? author : session.merge(author));
+        if(session.contains(author)) {
+            session.remove(author);
+        }
     }
 }
