@@ -1,3 +1,10 @@
+drop table if exists public.registercard;
+drop table if exists public.documentversion;
+drop table if exists public.document;
+drop table if exists public.author;
+
+
+
 create table public.author
 (
     authorid integer not null
