@@ -17,7 +17,7 @@ public class Author implements Serializable {
     @Column(name = "username")
     private String userName;
 
-    @Column(name = "login")
+    @Column(name = "login", unique = true)
     private String login;
 
 
