@@ -25,13 +25,20 @@ public class DocumentVersion implements Serializable {
     @Column(name = "content")
     private byte content;
 
+    @Column(name = "version")
+    private int version;
+
     public DocumentVersion() {
     }
 
-    public DocumentVersion(Document documentId, Author versionAuthor, byte content) {
-        this.documentId = documentId;
-        this.versionAuthor = versionAuthor;
-        this.content = content;
+
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public int getId() {
@@ -70,11 +77,11 @@ public class DocumentVersion implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof DocumentVersion that)) return false;
-        return id == that.id && content == that.content && documentId.equals(that.documentId) && versionAuthor.equals(that.versionAuthor);
+        return id == that.id && content == that.content && version == that.version && documentId.equals(that.documentId) && versionAuthor.equals(that.versionAuthor);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, documentId, versionAuthor, content);
+        return Objects.hash(id, documentId, versionAuthor, content, version);
     }
 }
