@@ -18,6 +18,8 @@ public class AuthorRepository {
 
     private Session session;
 
+    public AuthorRepository(){};
+
     public AuthorRepository(Session session) {
         this.session = session;
     }
@@ -68,7 +70,7 @@ public class AuthorRepository {
     /**
      * Изменение имени пользователя по id
      *
-     * @param id:          идентификатор пользователя
+     * @param id: идентификатор пользователя
      * @param newUsername: новое имя пользователя
      * @throws NoSuchElementException если не существует пользователя с таким id
      */
