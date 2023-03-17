@@ -1,8 +1,13 @@
 package MiniDFlow.repository;
 
+import MiniDFlow.repository.entity.Author;
 import MiniDFlow.repository.entity.Document;
+import jakarta.persistence.TypedQuery;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @Repository
@@ -14,15 +19,35 @@ public class DocumentRepository{
     }
 
     /**
-     * Сохраняет документ в бд
-     * @param document документ с заполненными полями !!!КРОМЕ ID!!!
-     * */
-    public void create(Document document){
-
+     * Создание нового документа в бд
+     *
+     * @param documentName название документа
+     * @param author       автор документа
+     */
+    public void create(String documentName, Author author) {
+        Document document = new Document(documentName, author);
+        session.persist(document);
     }
 
-    public Document getById(Integer id){
-        return null;
+    /**
+     * Получение информации о документе по id
+     *
+     * @param id: идентификатор документа
+     * @return объект Document, соответствующий заданному идентификатору ИЛИ null, если по такому id нет сущности
+     * Если такого id не существует, то выбрасывается ошибка "документ не найден"
+     */
+    public Document getById(Integer id) throws NoSuchElementException {
+        try {
+            return session.find(Document.class, id);
+        } catch (Exception ex) {
+            throw new NoSuchElementException("Document with id " + id + " not found");
+        }
+    }
+
+    public List<Document> getAll() {
+        String hql = "FROM Document";
+        TypedQuery<Document> query = session.createQuery(hql, Document.class);
+        return query.getResultList();
     }
 
 }
