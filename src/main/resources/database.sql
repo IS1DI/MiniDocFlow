@@ -7,7 +7,7 @@ drop table if exists public.author;
 
 create table public.author
 (
-    authorid integer not null
+    authorid serial not null
         primary key,
     login    varchar(255)
         constraint login_unq
