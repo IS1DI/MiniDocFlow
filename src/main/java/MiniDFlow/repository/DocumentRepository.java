@@ -1,6 +1,5 @@
 package MiniDFlow.repository;
 
-import MiniDFlow.repository.entity.Author;
 import MiniDFlow.repository.entity.Document;
 import jakarta.persistence.TypedQuery;
 import org.hibernate.Session;
@@ -21,11 +20,10 @@ public class DocumentRepository{
     /**
      * Создание нового документа в бд
      *
-     * @param documentName название документа
-     * @param author       автор документа
+     * @param document все поля должны быть заполнены !!!кроме ID!!!
+     *
      */
-    public void create(String documentName, Author author) {
-        Document document = new Document(documentName, author);
+    public void create(Document document) {
         session.persist(document);
     }
 
@@ -34,7 +32,7 @@ public class DocumentRepository{
      *
      * @param id: идентификатор документа
      * @return объект Document, соответствующий заданному идентификатору ИЛИ null, если по такому id нет сущности
-     * Если такого id не существует, то выбрасывается ошибка "документ не найден"
+     * @throws NoSuchElementException если такого id не существует
      */
     public Document getById(Integer id) throws NoSuchElementException {
         try {
@@ -43,7 +41,9 @@ public class DocumentRepository{
             throw new NoSuchElementException("Document with id " + id + " not found");
         }
     }
-
+    /**
+     * Возвращает список всех документов
+     * */
     public List<Document> getAll() {
         String hql = "FROM Document";
         TypedQuery<Document> query = session.createQuery(hql, Document.class);
