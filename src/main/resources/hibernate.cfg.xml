@@ -15,10 +15,10 @@
         <property name="hbm2ddl.auto">update</property>
 
         <!-- hibernate mapping -->
-        <mapping class = "MiniDFlow.repository.entity.Author"/>
-        <mapping class="MiniDFlow.repository.entity.Document"/>
-        <mapping class="MiniDFlow.repository.entity.DocumentVersion"/>
-        <mapping class="MiniDFlow.repository.entity.RegisterCard"/>
+        <mapping class = "MiniDFlow.entity.Author"/>
+        <mapping class="MiniDFlow.entity.Document"/>
+        <mapping class="MiniDFlow.entity.DocumentVersion"/>
+        <mapping class="MiniDFlow.entity.RegisterCard"/>
     </session-factory>
 
 </hibernate-configuration>
