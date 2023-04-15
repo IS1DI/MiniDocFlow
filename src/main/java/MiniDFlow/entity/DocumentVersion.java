@@ -1,9 +1,10 @@
-package MiniDFlow.repository.entity;
+package MiniDFlow.entity;
 
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
@@ -23,7 +24,7 @@ public class DocumentVersion implements Serializable {
     private Author versionAuthor;
 
     @Column(name = "content")
-    private byte content;
+    private byte[] content;
 
     @Column(name = "version")
     private int version;
@@ -65,11 +66,11 @@ public class DocumentVersion implements Serializable {
         this.versionAuthor = versionAuthor;
     }
 
-    public byte getContent() {
+    public byte[] getContent() {
         return content;
     }
 
-    public void setContent(byte content) {
+    public void setContent(byte[] content) {
         this.content = content;
     }
 
@@ -82,6 +83,6 @@ public class DocumentVersion implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, documentId, versionAuthor, content, version);
+        return Objects.hash(id, documentId, versionAuthor, Arrays.hashCode(content), version);
     }
 }

@@ -1,7 +1,7 @@
 package MiniDFlow.repository;
 
-import MiniDFlow.repository.entity.Document;
-import jakarta.persistence.TypedQuery;
+import MiniDFlow.entity.Document;
+import javax.persistence.TypedQuery;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
 public class DocumentRepository{
     private Session session;
 
-    DocumentRepository(Session session){
+    public DocumentRepository(Session session){
         this.session = session;
     }
 

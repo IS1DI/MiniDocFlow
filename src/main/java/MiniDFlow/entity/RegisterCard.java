@@ -1,7 +1,7 @@
-package MiniDFlow.repository.entity;
+package MiniDFlow.entity;
 
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.io.Serializable;
 import java.time.Instant;

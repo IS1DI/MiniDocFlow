@@ -1,8 +1,8 @@
 package MiniDFlow.repository;
 
-import MiniDFlow.repository.entity.Author;
+import MiniDFlow.entity.Author;
 import com.sun.istack.NotNull;
-import jakarta.persistence.TypedQuery;
+import javax.persistence.TypedQuery;
 import javassist.bytecode.DuplicateMemberException;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
