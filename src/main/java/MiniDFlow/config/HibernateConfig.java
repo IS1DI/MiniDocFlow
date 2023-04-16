@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-@Configuration
+@Configuration("HibConf")
 @EnableTransactionManagement
 public class HibernateConfig {
 
@@ -43,7 +43,7 @@ public class HibernateConfig {
                 "hibernate.hbm2ddl.auto", "update");
         hibernateProperties.setProperty(
                 "hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-
+        hibernateProperties.setProperty("hibernate.show.sql","true");
         return hibernateProperties;
     }
 

@@ -2,13 +2,13 @@ package MiniDFlow.repository;
 
 import MiniDFlow.entity.Author;
 import com.sun.istack.NotNull;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javassist.bytecode.DuplicateMemberException;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -18,10 +18,12 @@ public class AuthorRepository {
 
     private Session session;
 
-    public AuthorRepository(){};
 
-    public AuthorRepository(Session session) {
+    public AuthorRepository(@Autowired Session session) {
         this.session = session;
+    }
+    public Session getSession(){
+        return session;
     }
 
     /**
@@ -56,9 +58,9 @@ public class AuthorRepository {
      * @return объект Author, соответствующий заданному имени пользователя
      */
     public Optional<Author> getByUsername(String username) {
-        String hql = "FROM Author WHERE userName = :username";
+        String hql = "FROM Author WHERE username = :u";
         TypedQuery<Author> query = session.createQuery(hql, Author.class);
-        query.setParameter("username", username);
+        query.setParameter("u", username);
         List<Author> results = query.getResultList();
         if (results.isEmpty()) {
             return Optional.empty();
@@ -77,7 +79,7 @@ public class AuthorRepository {
     public void updateUsernameById(Integer id, String newUsername) throws NoSuchElementException {
         Author author = getById(id);
         if (author != null) {
-            String hql = "UPDATE Author SET userName = :newUsername WHERE id = :id";
+            String hql = "UPDATE Author SET username = :newUsername WHERE id = :id";
             Query query = session.createQuery(hql);
             query.setParameter("newUsername", newUsername);
             query.setParameter("id", id);
@@ -87,6 +89,18 @@ public class AuthorRepository {
         }
     }
 
+    public boolean exist(String username){
+        Query q = session.createQuery("from Author where username = :username");
+        q.setParameter("username",username);
+        try{
+            q.getSingleResult();
+        }catch (NoResultException ex){
+            return false;
+        }
+        return true;
+    }
+
+
 
     /**
      * Изменение имени пользователя по entity (в entity уже содержится id)
@@ -94,7 +108,7 @@ public class AuthorRepository {
      * @param author: объект Author с новым именем пользователя и существующим идентификатором
      */
     public void updateUsernameByEntity(@NotNull Author author, String newUsername) {
-        author.setUserName(newUsername);
+        author.setUsername(newUsername);
         session.merge(author);
     }
 

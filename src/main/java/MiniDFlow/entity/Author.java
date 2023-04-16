@@ -1,8 +1,10 @@
 package MiniDFlow.entity;
 
+
 import javax.persistence.*;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -14,20 +16,26 @@ public class Author implements Serializable {
     @Column(name = "authorId")
     private int id;
 
-    @Column(name = "username")
-    private String userName;
-
-    @Column(name = "login", unique = true)
-    private String login;
-
+    @Column(name = "username", unique = true)
+    private String username;
 
     @Column(name = "password")
     private String password;
 
-    public Author(String login, String password, String userName) {
-        this.login = login;
+    public List<Authority> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(List<Authority> authorities) {
+        this.authorities = authorities;
+    }
+
+    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
+    private List<Authority> authorities;
+
+    public Author(String username, String password) {
         this.password = password;
-        this.userName = userName;
+        this.username = username;
     }
 
     public Author() {
@@ -41,20 +49,14 @@ public class Author implements Serializable {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+
+
+    public String getUsername() {
+        return username;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String userName) {
+        this.username = userName;
     }
 
     public String getPassword() {
@@ -69,11 +71,11 @@ public class Author implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Author author)) return false;
-        return id == author.id && userName.equals(author.userName) && login.equals(author.login) && password.equals(author.password);
+        return id == author.id && username.equals(author.username)  && password.equals(author.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userName, login, password);
+        return Objects.hash(id, username, password);
     }
 }
