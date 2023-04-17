@@ -3,6 +3,8 @@ package MiniDFlow.repository;
 import MiniDFlow.entity.Document;
 import javax.persistence.TypedQuery;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,10 +13,12 @@ import java.util.NoSuchElementException;
 
 @Repository
 public class DocumentRepository{
-    private Session session;
+    @Autowired
+    private SessionFactory sessionFactory;
 
-    public DocumentRepository(Session session){
-        this.session = session;
+
+    private Session getSession() {
+        return sessionFactory.openSession();
     }
 
     /**
@@ -24,7 +28,7 @@ public class DocumentRepository{
      *
      */
     public void create(Document document) {
-        session.persist(document);
+        getSession().save(document);
     }
 
     /**
@@ -36,7 +40,7 @@ public class DocumentRepository{
      */
     public Document getById(Integer id) throws NoSuchElementException {
         try {
-            return session.find(Document.class, id);
+            return getSession().find(Document.class, id);
         } catch (Exception ex) {
             throw new NoSuchElementException("Document with id " + id + " not found");
         }
@@ -46,7 +50,7 @@ public class DocumentRepository{
      * */
     public List<Document> getAll() {
         String hql = "FROM Document";
-        TypedQuery<Document> query = session.createQuery(hql, Document.class);
+        TypedQuery<Document> query = getSession().createQuery(hql, Document.class);
         return query.getResultList();
     }
 

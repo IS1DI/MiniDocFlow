@@ -4,8 +4,11 @@ import MiniDFlow.entity.Author;
 import MiniDFlow.entity.Document;
 import MiniDFlow.entity.DocumentVersion;
 import javax.persistence.NoResultException;
+
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,11 +16,11 @@ import java.util.List;
 
 @Repository
 public class DocumentVersionRepository{
+    @Autowired
+    private SessionFactory sessionFactory;
 
-    private Session session;
-
-    public DocumentVersionRepository(Session session){
-        this.session = session;
+    private Session getSession() {
+        return sessionFactory.openSession();
     }
 
     /**
@@ -25,7 +28,7 @@ public class DocumentVersionRepository{
      * @param documentVersion
      */
     public void create(DocumentVersion documentVersion){
-        session.persist(documentVersion);
+        getSession().save(documentVersion);
     }
 
 
@@ -34,7 +37,7 @@ public class DocumentVersionRepository{
      * @param document
      */
     public List<DocumentVersion> getAllVerByDocument(Document document){
-        Query<DocumentVersion> q = session.createQuery("from DocumentVersion where documentId = :did",DocumentVersion.class);
+        Query<DocumentVersion> q = getSession().createQuery("from DocumentVersion where documentId = :did",DocumentVersion.class);
         q.setParameter("did",document);
         return q.getResultList();
     }
@@ -45,7 +48,7 @@ public class DocumentVersionRepository{
      * @param author
      */
     public List<DocumentVersion> getAllVerByAuthor(Author author){
-        Query<DocumentVersion> q = session.createQuery("from DocumentVersion where versionAuthor = :aid", DocumentVersion.class);
+        Query<DocumentVersion> q = getSession().createQuery("from DocumentVersion where versionAuthor = :aid", DocumentVersion.class);
         q.setParameter("aid",author);
         return q.getResultList();
     }
@@ -57,7 +60,7 @@ public class DocumentVersionRepository{
      * @throws NoResultException - не найдено ни одного результата
      */
     public DocumentVersion getLastVerByDocument(Document document) throws NoResultException{
-        Query<DocumentVersion> q = session.createQuery("from DocumentVersion where documentId = :did order by version desc limit 1", DocumentVersion.class);
+        Query<DocumentVersion> q = getSession().createQuery("from DocumentVersion where documentId = :did order by version desc limit 1", DocumentVersion.class);
         q.setParameter("did",document);
         return q.getSingleResult();
     }
@@ -69,7 +72,7 @@ public class DocumentVersionRepository{
      * @throws NoResultException - не найдено ни одного результата
      */
     public DocumentVersion getLastVerByAuthor(Author author) throws NoResultException {
-        Query<DocumentVersion> q = session.createQuery("from DocumentVersion where versionAuthor = :aid order by version desc limit 1", DocumentVersion.class);
+        Query<DocumentVersion> q = getSession().createQuery("from DocumentVersion where versionAuthor = :aid order by version desc limit 1", DocumentVersion.class);
         q.setParameter("aid", author);
         return q.getSingleResult();
     }
@@ -79,9 +82,9 @@ public class DocumentVersionRepository{
      * @param documentVersion -
      */
     public void update(DocumentVersion documentVersion){
-        Query<Integer> q = session.createQuery("select max(version) from DocumentVersion where documentId = :did", Integer.class );
+        Query<Integer> q = getSession().createQuery("select max(version) from DocumentVersion where documentId = :did", Integer.class );
         q.setParameter("did",documentVersion.getDocumentId());
         documentVersion.setVersion(q.getSingleResult() + 1);
-        session.persist(documentVersion);
+        getSession().persist(documentVersion);
     }
 }

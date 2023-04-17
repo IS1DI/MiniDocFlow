@@ -3,7 +3,9 @@ package MiniDFlow.repository;
 import MiniDFlow.entity.Document;
 import MiniDFlow.entity.RegisterCard;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
@@ -12,17 +14,18 @@ import java.time.Instant;
 @Repository
 public class RegisterCardRepository{
 
-    private Session session;
-    RegisterCardRepository(Session session){
-        this.session = session;
+    @Autowired
+    private SessionFactory sessionFactory;
+    private Session getSession() {
+        return sessionFactory.openSession();
     }
 
     public void create(RegisterCard registerCard){
-        session.persist(registerCard);
+        getSession().save(registerCard);
     }
 
     public void update(Document document, String documentExternNumber){
-        Query q =  session.createQuery("update RegisterCard set documentExternNumber = :dExNum, dateExtern = :dEx where documentId = :did");
+        Query q =  getSession().createQuery("update RegisterCard set documentExternNumber = :dExNum, dateExtern = :dEx where documentId = :did");
         q.setParameter("dExNum",documentExternNumber);
         q.setParameter("did",document);
         q.setParameter("dEx", Instant.now());

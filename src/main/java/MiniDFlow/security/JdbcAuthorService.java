@@ -7,6 +7,7 @@ import javassist.bytecode.DuplicateMemberException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +18,15 @@ public class JdbcAuthorService implements UserDetailsManager {
     private AuthorService authorService;
     @Autowired
     private AuthoritiesService authoritiesService;
+    @Autowired
+    PasswordEncoder encoder;
 
 
     @Override
     public void createUser(UserDetails userDetails) {
-        Author author = new Author(userDetails.getUsername(),userDetails.getPassword());
+        Author author = new Author(userDetails.getUsername(), encoder.encode(userDetails.getPassword()));
         try {
-            authorService.create(author);
-            authoritiesService.createAuthoritiesForAuthor(author,userDetails.getAuthorities());
+            authorService.create(author,userDetails.getAuthorities());
         } catch (DuplicateMemberException e) {
             throw new RuntimeException(e);
         }
@@ -32,7 +34,7 @@ public class JdbcAuthorService implements UserDetailsManager {
 
     @Override
     public void updateUser(UserDetails userDetails) {
-        Author author = new Author(userDetails.getUsername(),userDetails.getPassword());
+        Author author = new Author(userDetails.getUsername(),encoder.encode(userDetails.getPassword()));
         authorService.updateByUsername(userDetails.getUsername(),author);
         authoritiesService.updateAuthorities(author,userDetails.getAuthorities());
     }
@@ -44,7 +46,7 @@ public class JdbcAuthorService implements UserDetailsManager {
 
     @Override
     public void changePassword(String s, String s1) {
-        authorService.changePassword(s,s1);
+        authorService.changePassword(s, encoder.encode(s1));
     }
 
     @Override

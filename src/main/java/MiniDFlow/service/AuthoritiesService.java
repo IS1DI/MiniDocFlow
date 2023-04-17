@@ -29,14 +29,6 @@ public class AuthoritiesService {
         grantedAuthorities.stream().map(a ->  new Authority(a.getAuthority(), author)).forEach(authority -> authorityRepository.update(authority));
     }
 
-    @Transactional
-    public void createAuthoritiesForAuthor(Author author, Collection<? extends GrantedAuthority> grantedAuthorities){
-        if(authorRepository.exist(author.getUsername())) {
-            grantedAuthorities.stream().map(a -> new Authority(a.getAuthority(), author)).forEach(authority -> authorityRepository.create(authority));
-        }else{
-            throw new UsernameNotFoundException("user not found");
-        }
-    }
 
     @Transactional(rollbackOn = UsernameNotFoundException.class)
     public List<GrantedAuthority> getAuthoritiesByUsername(String username){

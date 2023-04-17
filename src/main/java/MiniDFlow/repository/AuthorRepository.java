@@ -6,6 +6,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javassist.bytecode.DuplicateMemberException;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -16,14 +17,12 @@ import java.util.Optional;
 @Repository
 public class AuthorRepository {
 
-    private Session session;
+    @Autowired
+    private SessionFactory sessionFactory;
 
 
-    public AuthorRepository(@Autowired Session session) {
-        this.session = session;
-    }
-    public Session getSession(){
-        return session;
+    private Session getSession() {
+        return sessionFactory.openSession();
     }
 
     /**
@@ -35,9 +34,9 @@ public class AuthorRepository {
      */
     public void create(Author author) throws DuplicateMemberException {
         try {
-            session.persist(author);
+            getSession().save(author);
         }catch (Exception ex){
-            throw new DuplicateMemberException("author с таким login существует");
+            throw new DuplicateMemberException(ex.getMessage());
         }
     }
 
@@ -48,7 +47,7 @@ public class AuthorRepository {
      * @return объект Author, соответствующий заданному идентификатору ИЛИ null, если по такому id нет сущности
      */
     public Author getById(Integer id) {
-        return session.find(Author.class, id);
+        return getSession().find(Author.class, id);
     }
 
     /**
@@ -59,7 +58,7 @@ public class AuthorRepository {
      */
     public Optional<Author> getByUsername(String username) {
         String hql = "FROM Author WHERE username = :u";
-        TypedQuery<Author> query = session.createQuery(hql, Author.class);
+        TypedQuery<Author> query = getSession().createQuery(hql, Author.class);
         query.setParameter("u", username);
         List<Author> results = query.getResultList();
         if (results.isEmpty()) {
@@ -80,7 +79,7 @@ public class AuthorRepository {
         Author author = getById(id);
         if (author != null) {
             String hql = "UPDATE Author SET username = :newUsername WHERE id = :id";
-            Query query = session.createQuery(hql);
+            Query query = getSession().createQuery(hql);
             query.setParameter("newUsername", newUsername);
             query.setParameter("id", id);
             query.executeUpdate();
@@ -90,7 +89,7 @@ public class AuthorRepository {
     }
 
     public boolean exist(String username){
-        Query q = session.createQuery("from Author where username = :username");
+        Query q = getSession().createQuery("from Author where username = :username");
         q.setParameter("username",username);
         try{
             q.getSingleResult();
@@ -109,7 +108,7 @@ public class AuthorRepository {
      */
     public void updateUsernameByEntity(@NotNull Author author, String newUsername) {
         author.setUsername(newUsername);
-        session.merge(author);
+        getSession().merge(author);
     }
 
     /**
@@ -121,7 +120,7 @@ public class AuthorRepository {
     public void deleteById(Integer id) throws NoSuchElementException {
         Author author = getById(id);
         if (author != null) {
-            session.remove(author);
+            getSession().remove(author);
         }else{
             throw new NoSuchElementException("incorrect id");
         }
@@ -133,8 +132,8 @@ public class AuthorRepository {
      * @param author: объект Author с заданным идентификатором, который нужно удалить
      */
     public void deleteByEntity(Author author) {
-        if(session.contains(author)) {
-            session.remove(author);
+        if(getSession().contains(author)) {
+            getSession().remove(author);
         }
     }
 }
