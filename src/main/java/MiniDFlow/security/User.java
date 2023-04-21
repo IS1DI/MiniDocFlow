@@ -14,6 +14,7 @@ public class User implements UserDetails {
         this.author = author;
     }
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return author.getAuthorities().stream().map(authority -> new SimpleGrantedAuthority(

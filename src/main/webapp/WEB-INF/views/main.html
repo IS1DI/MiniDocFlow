@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>MiniDocFlow</title>
+</head>
+<body>
+
+
+    <table>
+        <thead>
+        <tr>
+            <th>DocId</th>
+            <th>DocName</th>
+            <th>Version</th>
+            <th>Author</th>
+            <th>Size</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="doc: ${documentViewList}">
+            <td th:text="${doc.documentId}"></td>
+            <td>
+                <a th:text="${doc.documentName}" th:href="@{/doc/{id}(id = ${doc.documentId})}"></a>
+            </td>
+            <td>
+                <a th:text="${doc.version}" th:href="@{/doc/{id}(id=${doc.documentId},ver=${doc.version})}"></a>
+            </td>
+            <td>
+                <a th:text="${doc.author}" th:href="@{/author/{id}(id=${doc.author})}"></a>
+            </td>
+            <td th:with="len=${#numbers.formatDecimal((doc.lengthOfFile*1.0) /(1024*1024),1,3)}"
+                th:text="${len} + ' MB'"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

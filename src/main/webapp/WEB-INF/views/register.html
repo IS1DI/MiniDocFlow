@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>MiniDocFlow - Register</title>
+</head>
+<body>
+<h1>Login page</h1>
+<!--<p th:if="${registerError}" class="error">Wrong user or password</p> -->
+<form th:action="@{/reg}" method="POST" th:object="${userRegForm}">
+    <label for="username">Username</label>:
+    <input type="text" id="username" th:field="*{username}" autofocus="autofocus" /> <br />
+    <label for="password">Password</label>:
+    <input type="password" id="password" th:field="*{password}"/> <br />
+    <input type="submit" value="Register" />
+</form>
+</body>
+</html>

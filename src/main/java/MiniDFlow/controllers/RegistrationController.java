@@ -1,27 +1,29 @@
 package MiniDFlow.controllers;
 
+import MiniDFlow.POJO.UserDetailsForm;
 import MiniDFlow.POJO.UserRegForm;
 import MiniDFlow.security.JdbcAuthorService;
-import javassist.bytecode.DuplicateMemberException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class RegistrationController {
     @Autowired
     JdbcAuthorService userDetailsManger;
-    @GetMapping(value = "/hello")
-    public ResponseEntity<?> startPage(){
-        return new ResponseEntity<>("hello",HttpStatus.OK);
+
+    @GetMapping(value = "/reg")
+    public String getRegisterPage(Model model){
+        UserRegForm userRegForm = new UserRegForm();
+        model.addAttribute("userRegForm",userRegForm);
+        return "register";
     }
 
     @PostMapping(value = "/reg")
-    public ResponseEntity<?> register(@RequestParam String username, @RequestParam String pass) {
-        userDetailsManger.createUser(new UserRegForm(username,pass));
-        return new ResponseEntity<>("registered", HttpStatus.OK);
+    public String register(@ModelAttribute("userRegForm") UserRegForm user) {
+        userDetailsManger.createUser(new UserDetailsForm(user));
+        return "redirect:/doc/main";
     }
 
 }

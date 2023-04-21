@@ -10,7 +10,7 @@ public class Authority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
-    @JoinColumn
+    @JoinColumn(nullable = false)
     @ManyToOne
     private Author author;
 

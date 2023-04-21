@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>MiniDocFlow - Upload</title>
+</head>
+<body>
+<form method="POST" action="/doc/new" enctype="multipart/form-data" th:object="${documentPOJO}">
+  <table>
+    <tr>
+      <td><label for="documentNumber">Write a file name</label></td>
+      <td><input type="text" id="documentNumber" th:field="*{name}"></td>
+    </tr>
+    <tr>
+      <td><label for="fileName">Write a document intro number</label></td>
+      <td><input type="text" id="fileName" th:field="*{documentIntroNumber}"></td>
+    </tr>
+    <tr>
+      <td><label path="file">Select a file to upload</label></td>
+      <td><input type="file" name="file" th:field="*{file}" /></td>
+    </tr>
+    <tr>
+      <td><input type="submit" value="Submit" /></td>
+    </tr>
+  </table>
+  </form>
+</body>

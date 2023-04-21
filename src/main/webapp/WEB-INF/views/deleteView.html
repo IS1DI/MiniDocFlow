@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>MiniDocFlow - Delete</title>
+</head>
+<body>
+<form th:method="DELETE" th:action="@{/doc/{id}(id=${doc.documentId})}">
+  <table>
+    <tr th:text="${doc.documentName}"></tr>
+    <tr>
+      <td><label for="documentExternNumber">Write a documentExternNumber</label></td>
+      <td><input type="text" id="documentExternNumber" th:name="dEx"></td>
+    </tr>
+    <tr>
+      <td><input type="submit" value="delete"/></td>
+    </tr>
+  </table>
+</form>
+</body>

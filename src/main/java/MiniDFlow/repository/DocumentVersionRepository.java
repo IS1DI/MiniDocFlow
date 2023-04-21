@@ -4,7 +4,7 @@ import MiniDFlow.entity.Author;
 import MiniDFlow.entity.Document;
 import MiniDFlow.entity.DocumentVersion;
 import javax.persistence.NoResultException;
-
+import javax.transaction.Transactional;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.hibernate.Session;
@@ -12,21 +12,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 
 @Repository
 public class DocumentVersionRepository{
+    private static Logger logger = Logger.getLogger(DocumentVersionRepository.class.getName());
     @Autowired
     private SessionFactory sessionFactory;
 
     private Session getSession() {
-        return sessionFactory.openSession();
+        return sessionFactory.getCurrentSession();
     }
 
     /**
      * CREATE
      * @param documentVersion
      */
+    @Transactional
     public void create(DocumentVersion documentVersion){
         getSession().save(documentVersion);
     }
@@ -36,6 +39,7 @@ public class DocumentVersionRepository{
      * READ
      * @param document
      */
+    @Transactional
     public List<DocumentVersion> getAllVerByDocument(Document document){
         Query<DocumentVersion> q = getSession().createQuery("from DocumentVersion where documentId = :did",DocumentVersion.class);
         q.setParameter("did",document);
@@ -52,19 +56,6 @@ public class DocumentVersionRepository{
         q.setParameter("aid",author);
         return q.getResultList();
     }
-
-    /**
-     * READ
-     * @param document - документ по которому ищется версия
-     * @return DocumentVersion
-     * @throws NoResultException - не найдено ни одного результата
-     */
-    public DocumentVersion getLastVerByDocument(Document document) throws NoResultException{
-        Query<DocumentVersion> q = getSession().createQuery("from DocumentVersion where documentId = :did order by version desc limit 1", DocumentVersion.class);
-        q.setParameter("did",document);
-        return q.getSingleResult();
-    }
-
     /**
      * READ
      * @param author - автор по которому ищется версия
@@ -81,10 +72,19 @@ public class DocumentVersionRepository{
      * UPDATE
      * @param documentVersion -
      */
+    @Transactional
     public void update(DocumentVersion documentVersion){
-        Query<Integer> q = getSession().createQuery("select max(version) from DocumentVersion where documentId = :did", Integer.class );
-        q.setParameter("did",documentVersion.getDocumentId());
-        documentVersion.setVersion(q.getSingleResult() + 1);
-        getSession().persist(documentVersion);
+        getSession().save(documentVersion);
+    }
+    public List<DocumentVersion> getAllVersions(){
+        Query<DocumentVersion> q = getSession().createQuery("from DocumentVersion order by documentId.id,version", DocumentVersion.class);
+        return q.getResultList();
+    }
+    @Transactional
+    public DocumentVersion getVersionByDocument(Document document, int version){
+        Query<DocumentVersion> q = getSession().createQuery("from DocumentVersion where documentId = :did and version = :ver",DocumentVersion.class);
+        q.setParameter("did",document);
+        q.setParameter("ver",version);
+        return q.getSingleResult();
     }
 }

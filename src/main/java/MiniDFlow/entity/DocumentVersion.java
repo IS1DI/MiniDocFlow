@@ -15,11 +15,11 @@ public class DocumentVersion implements Serializable {
     @Column(name = "documentVersionId")
     private int id;
 
-    @JoinColumn(name = "documentId")
+    @JoinColumn(name = "documentId",nullable = false)
     @ManyToOne
     private Document documentId;
 
-    @JoinColumn(name = "versionAuthor")
+    @JoinColumn(name = "versionAuthor",nullable = false)
     @ManyToOne
     private Author versionAuthor;
 
@@ -32,6 +32,18 @@ public class DocumentVersion implements Serializable {
     public DocumentVersion() {
     }
 
+    public DocumentVersion(Document documentId, Author versionAuthor, byte[] content) {
+        this.documentId = documentId;
+        this.versionAuthor = versionAuthor;
+        this.content = content;
+        this.version = 1;
+    }
+    public DocumentVersion(Document documentId, Author versionAuthor, byte[] content,int version) {
+        this.documentId = documentId;
+        this.versionAuthor = versionAuthor;
+        this.content = content;
+        this.version = version;
+    }
 
 
     public int getVersion() {
