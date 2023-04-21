@@ -39,7 +39,6 @@ public class AuthorityRepository {
     }
 
     @Transactional
-
     public List<Authority> findAuthoritiesByUsername(String username) {
         Query<Authority> q = getSession().createQuery("select au.authorities from Author au where au.username = :username", Authority.class);
         q.setParameter("username", username);

@@ -17,7 +17,6 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -41,34 +40,8 @@ public class DocumentService {
     }
 
     @Transactional
-    public List<DocumentView> getAllExistDocViews() {
-        List<Document> documents = documentRepository.getAllExistDocuments();
-        return documents.stream().map(doc -> {
-            DocumentVersion docVer = documentVersionRepository.getVersionByDocument(doc, doc.getLastVersion());
-            return new DocumentView(
-                    doc.getId(),
-                    doc.getName(),
-                    docVer.getVersionAuthor().getUsername(),
-                    docVer.getContent().length,
-                    docVer.getVersion(),
-                    doc.isExist()
-            );
-        }).collect(Collectors.toList());
-    }
-
-    @Transactional
     public List<DocumentView> getAllDocViews() {
-        return documentRepository.getAll().stream().map(doc -> {
-            DocumentVersion docVer = documentVersionRepository.getVersionByDocument(doc, doc.getLastVersion());
-            return new DocumentView(
-                    doc.getId(),
-                    doc.getName(),
-                    docVer.getVersionAuthor().getUsername(),
-                    docVer.getContent().length,
-                    docVer.getVersion(),
-                    doc.isExist()
-            );
-        }).collect(Collectors.toList());
+        return documentRepository.getAllDocViews();
     }
 
     @Transactional
@@ -87,27 +60,6 @@ public class DocumentService {
     }
 
     /**
-     *
-     * @param id document id
-     * @return  List of DocumentView with all versions by document
-     */
-    @Transactional
-    public List<DocumentView> getAllDocViewsById(int id) {
-        Document doc = documentRepository.getById(id);
-        return documentVersionRepository
-                .getAllVerByDocument(doc)
-                .stream().map(docVer ->
-                        new DocumentView(
-                                doc.getId(),
-                                doc.getName(),
-                                docVer.getVersionAuthor().getUsername(),
-                                docVer.getContent().length,
-                                docVer.getVersion(),
-                                doc.isExist()
-                        )).collect(Collectors.toList());
-    }
-
-    /**
      * if ver < 1: returns last version
      * @param id document id
      * @param ver version of document
@@ -121,12 +73,12 @@ public class DocumentService {
                 doc.getId(),
                 doc.getName(),
                 docVer.getVersionAuthor().getUsername(),
-                docVer.getContent().length,
                 docVer.getVersion(),
-                doc.isExist()
+                doc.isExist(),
+                doc.getRegisterCard().getDateIntro(),
+                doc.getRegisterCard().getDocumentIntroNumber()
         );
     }
-
 
     @Transactional
     public void deleteDocumentById(int id, String documentExternNumber) {
@@ -137,5 +89,9 @@ public class DocumentService {
     public byte[] getFile(int id,int ver){
         Document document = documentRepository.getById(id);
         return documentVersionRepository.getVersionByDocument(document,ver>=1?ver:document.getLastVersion()).getContent();
+    }
+    @Transactional
+    public List<DocumentView> getAllDocViewsByAuthor(Author author) {
+        return documentRepository.getAllDocViewsByAuthor(author);
     }
 }

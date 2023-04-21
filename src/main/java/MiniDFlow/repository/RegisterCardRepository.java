@@ -13,28 +13,36 @@ import java.util.logging.Logger;
 
 
 @Repository
-public class RegisterCardRepository{
+public class RegisterCardRepository {
 
     private static Logger logger = Logger.getLogger(RegisterCardRepository.class.getName());
 
     @Autowired
     private SessionFactory sessionFactory;
+
     private Session getSession() {
         return sessionFactory.getCurrentSession();
     }
 
     @Transactional
-    public void create(RegisterCard registerCard){
+    public void create(RegisterCard registerCard) {
         getSession().save(registerCard);
     }
+
     @Transactional
-    public void update(Document id, String documentExternNumber){
-        Query<RegisterCard> q = getSession().createQuery("from RegisterCard where documentId= :did",RegisterCard.class);
-        q.setParameter("did",id);
+    public void update(Document id, String documentExternNumber) {
+        Query<RegisterCard> q = getSession().createQuery("from RegisterCard where documentId= :did", RegisterCard.class);
+        q.setParameter("did", id);
         RegisterCard registerCard = q.getSingleResult();
         registerCard.setDateExtern(Instant.now());
         registerCard.setDocumentExternNumber(documentExternNumber);
         getSession().merge(registerCard);
     }
 
+    @Transactional
+    public RegisterCard getByDocId(int id) {
+        Query<RegisterCard> q = getSession().createQuery("from RegisterCard rc where rc.documentId.id = :did", RegisterCard.class);
+        q.setParameter("did", id);
+        return q.getSingleResult();
+    }
 }

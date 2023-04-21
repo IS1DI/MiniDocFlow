@@ -1,5 +1,7 @@
 package MiniDFlow.entity.projection;
 
+import java.time.Instant;
+
 public class DocumentView {
     public int getDocumentId() {
         return documentId;
@@ -14,17 +16,25 @@ public class DocumentView {
     private int documentId;
     private String documentName;
     private String author;
-    private int lengthOfFile;
+    private String documentIntroNumber;
     private int version;
     private boolean isExist;
+    private Instant dateIntro;
 
-    public DocumentView(int documentId,String documentName, String author, int lengthOfFile,int version,boolean isExist) {
+    public DocumentView(int documentId,
+                        String documentName,
+                        String author,
+                        int version,
+                        boolean isExist,
+                        Instant dateIntro,
+                        String documentIntroNumber) {
         this.documentId = documentId;
         this.documentName = documentName;
         this.author = author;
-        this.lengthOfFile = lengthOfFile;
         this.version = version;
         this.isExist = isExist;
+        this.dateIntro = dateIntro;
+        this.documentIntroNumber = documentIntroNumber;
     }
 
 
@@ -53,21 +63,26 @@ public class DocumentView {
     public void setAuthor(String author) {
         this.author = author;
     }
-
-    public int getLengthOfFile() {
-        return lengthOfFile;
-    }
-
-    public void setLengthOfFile(int lengthOfFile) {
-        this.lengthOfFile = lengthOfFile;
-    }
-
     public boolean isExist() {
         return isExist;
     }
 
     public void setExist(boolean exist) {
         isExist = exist;
+    }
+    public Instant getDateIntro() {
+        return dateIntro;
+    }
+
+    public void setDateIntro(Instant dateIntro) {
+        this.dateIntro = dateIntro;
+    }
+    public String getDocumentIntroNumber() {
+        return documentIntroNumber;
+    }
+
+    public void setDocumentIntroNumber(String documentIntroNumber) {
+        this.documentIntroNumber = documentIntroNumber;
     }
 
 }

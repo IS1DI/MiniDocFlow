@@ -16,7 +16,7 @@ public class RegisterCard implements Serializable {
     private int id;
 
 
-    @JoinColumn(name = "documentId",nullable = false)
+    @JoinColumn(name = "documentId",referencedColumnName = "documentId")
     @OneToOne
     private Document documentId;
 
@@ -31,7 +31,6 @@ public class RegisterCard implements Serializable {
 
     @Column(name = "dateExtern")
     private Instant dateExtern;
-
 
     public RegisterCard(Document documentId, String documentIntroNumber, String documentExternNumber, Instant dateIntro, Instant dateExtern) {
         this.documentId = documentId;

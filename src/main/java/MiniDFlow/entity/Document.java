@@ -3,9 +3,9 @@ package MiniDFlow.entity;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
-
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "Document")
@@ -19,8 +19,8 @@ public class Document implements Serializable {
     @Column(name = "documentName")
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "author",nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author", nullable = false)
     private Author author;
 
     @Formula(value = "(select max(dv.version) from DocumentVersion dv where dv.documentId = documentId)")
@@ -28,6 +28,11 @@ public class Document implements Serializable {
 
     @Formula(value = "(select (rg.dateExtern is null) from RegisterCard rg where rg.documentId = documentId)")
     protected boolean isExist;
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "documentId")
+    private RegisterCard registerCard;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "documentId")
+    private Set<DocumentVersion> documentVersion;
+
     public Document() {
     }
 
@@ -41,7 +46,8 @@ public class Document implements Serializable {
         this.name = name;
         this.author = author;
     }
-    public int getLastVersion(){
+
+    public int getLastVersion() {
         return lastVersion;
     }
 
@@ -83,5 +89,29 @@ public class Document implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, author);
+    }
+
+    public void setLastVersion(int lastVersion) {
+        this.lastVersion = lastVersion;
+    }
+
+    public void setExist(boolean exist) {
+        isExist = exist;
+    }
+
+    public RegisterCard getRegisterCard() {
+        return registerCard;
+    }
+
+    public void setRegisterCard(RegisterCard registerCard) {
+        this.registerCard = registerCard;
+    }
+
+    public Set<DocumentVersion> getDocumentVersion() {
+        return documentVersion;
+    }
+
+    public void setDocumentVersion(Set<DocumentVersion> documentVersion) {
+        this.documentVersion = documentVersion;
     }
 }

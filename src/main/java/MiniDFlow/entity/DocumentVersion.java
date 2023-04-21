@@ -16,11 +16,11 @@ public class DocumentVersion implements Serializable {
     private int id;
 
     @JoinColumn(name = "documentId",nullable = false)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Document documentId;
 
     @JoinColumn(name = "versionAuthor",nullable = false)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Author versionAuthor;
 
     @Column(name = "content")

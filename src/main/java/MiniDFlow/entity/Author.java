@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "Author")
@@ -21,6 +22,9 @@ public class Author implements Serializable {
 
     @Column(name = "password")
     private String password;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "versionAuthor")
+    private Set<DocumentVersion> versions;
 
     public List<Authority> getAuthorities() {
         return authorities;
@@ -77,5 +81,13 @@ public class Author implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, username, password);
+    }
+
+    public Set<DocumentVersion> getVersions() {
+        return versions;
+    }
+
+    public void setVersions(Set<DocumentVersion> versions) {
+        this.versions = versions;
     }
 }

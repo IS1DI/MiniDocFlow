@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MiniDocFlow</title>
+</head>
+<body>
+<h1 th:text="${username}"></h1>
+<table>
+  <thead>
+  <tr>
+    <th>DocId</th>
+    <th>DocName</th>
+    <th>Version</th>
+    <th>Date Intro</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="doc: ${documentViewList}">
+    <td th:text="${doc.documentId}"></td>
+    <td>
+      <a th:text="${doc.documentName}" th:href="@{/doc/{id}(id = ${doc.documentId})}"></a>
+    </td>
+    <td>
+      <a th:text="${doc.version}" th:href="@{/doc/{id}(id=${doc.documentId},ver=${doc.version})}"></a>
+    </td>
+    <td th:text="${doc.dateIntro}"></td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>

@@ -100,7 +100,7 @@ public class ApiDocumentController {
     }
     @GetMapping("/main")
     public String mainPage(Model model){
-        model.addAttribute(documentService.getAllExistDocViews());
+        model.addAttribute(documentService.getAllDocViews());
         return "main";
     }
 

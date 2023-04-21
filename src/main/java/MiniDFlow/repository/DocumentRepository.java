@@ -1,8 +1,11 @@
 package MiniDFlow.repository;
 
+import MiniDFlow.entity.Author;
 import MiniDFlow.entity.Document;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+
+import MiniDFlow.entity.projection.DocumentView;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,17 +54,39 @@ public class DocumentRepository{
             throw new NoSuchElementException("Document with id " + id + " not found");
         }
     }
-    /**
-     * Возвращает список всех документов
-     * */
     @Transactional
-    public List<Document> getAll() {
-        String hql = "FROM Document";
-        TypedQuery<Document> query = getSession().createQuery(hql, Document.class);
-        return query.getResultList();
+    public List<DocumentView> getAllDocViews(){
+        return getSession().createQuery("""
+                select new MiniDFlow.entity.projection.DocumentView(
+                    d.id,
+                    d.name,
+                    d.author.username,
+                    d.lastVersion,
+                    d.isExist,
+                    d.registerCard.dateIntro,
+                    d.registerCard.documentIntroNumber
+                )
+                from Document d
+                order by d.id
+                """,DocumentView.class).getResultList();
     }
     @Transactional
-    public List<Document> getAllExistDocuments(){
-        return getSession().createQuery("from Document d where d.isExist = true", Document.class).getResultList();
+    public List<DocumentView> getAllDocViewsByAuthor(Author author) {
+        TypedQuery<DocumentView> q = getSession().createQuery("""
+                select new MiniDFlow.entity.projection.DocumentView(
+                    d.id,
+                    d.name,
+                    d.author.username,
+                    d.lastVersion,
+                    d.isExist,
+                    d.registerCard.dateIntro,
+                    d.registerCard.documentIntroNumber
+                )
+                from Document d
+                where d.author = :aid
+                order by d.id
+                """,DocumentView.class);
+        q.setParameter("aid",author);
+        return q.getResultList();
     }
 }

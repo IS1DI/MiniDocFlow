@@ -14,11 +14,11 @@
             <th>DocName</th>
             <th>Version</th>
             <th>Author</th>
-            <th>Size</th>
+            <th>Date Intro</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="doc: ${documentViewList}">
+        <tr th:each="doc: ${documentViewList}" th:bgcolor="${doc.exist}?green:red">
             <td th:text="${doc.documentId}"></td>
             <td>
                 <a th:text="${doc.documentName}" th:href="@{/doc/{id}(id = ${doc.documentId})}"></a>
@@ -29,8 +29,7 @@
             <td>
                 <a th:text="${doc.author}" th:href="@{/author/{id}(id=${doc.author})}"></a>
             </td>
-            <td th:with="len=${#numbers.formatDecimal((doc.lengthOfFile*1.0) /(1024*1024),1,3)}"
-                th:text="${len} + ' MB'"></td>
+            <td th:text="${#temporals.formatISO(doc.dateIntro)}"></td>
         </tr>
         </tbody>
     </table>
