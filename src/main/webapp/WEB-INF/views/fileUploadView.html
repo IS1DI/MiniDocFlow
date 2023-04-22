@@ -17,7 +17,7 @@
             </a>
             <div class="d-flex justify-content-end">
                 <a class="nav-link d-flex justify-content-end link-light"
-                   th:href="@{/author/{username}(username=${user.username})}" th:text="${user.username}"> </a>
+                   th:href="@{/author/{username}(username=${username})}" th:text="${username}"> </a>
             </div>
         </div>
     </div>
@@ -53,7 +53,7 @@
     </div>
     <div class="row mb-3 justify-content-center">
         <div class="col-sm-5">
-            <input type="submit" class="btn btn-primary " value="Submit"/>
+            <input type="submit" class="btn btn-primary" value="Submit"/>
         </div>
     </div>
 </form>
