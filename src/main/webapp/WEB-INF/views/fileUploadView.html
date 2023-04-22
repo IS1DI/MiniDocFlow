@@ -15,7 +15,7 @@
             <a class="navbar-brand justify-content-center " th:href="@{/doc/main}">
                 <img th:src="@{/resources/logo.png}" alt="MiniDocFlow">
             </a>
-            <div th:if="${user!=null}" class="d-flex justify-content-end">
+            <div class="d-flex justify-content-end">
                 <a class="nav-link d-flex justify-content-end link-light"
                    th:href="@{/author/{username}(username=${user.username})}" th:text="${user.username}"> </a>
             </div>
