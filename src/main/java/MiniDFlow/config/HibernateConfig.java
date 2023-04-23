@@ -3,6 +3,7 @@ package MiniDFlow.config;
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,6 +44,10 @@ public class HibernateConfig {
         hibernateProperties.setProperty(
                 "hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         hibernateProperties.setProperty("hibernate.show_sql","true");
+        hibernateProperties.setProperty("hibernate.search.default.directory_provider","filesystem");
+        hibernateProperties.setProperty("hibernate.search.default.indexBase",
+                "/lucene/indexes/");
+        hibernateProperties.setProperty("hibernate.search.lucene.analysis_definition_provider","MiniDFlow.config.LuceneAnalysisConfig");
         return hibernateProperties;
     }
 
@@ -53,7 +58,6 @@ public class HibernateConfig {
         sessionFactory.setPackagesToScan(
                 "MiniDFlow");
         sessionFactory.setHibernateProperties(hibernateProperties());
-
         return sessionFactory;
     }
 
