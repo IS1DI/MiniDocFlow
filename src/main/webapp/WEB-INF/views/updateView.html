@@ -1,24 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>MiniDocFlow - Update</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
 </head>
 <body>
-<form th:method="POST" th:action="@{/doc/{id}/update(id=${documentPOJO.documentId})}" enctype="multipart/form-data" th:object="${documentPOJO}">
-    <table>
-        <tr>
-            <td>documentName</td>
-            <td th:text="${docName}"></td>
-        </tr>
-        <tr>
-            <td><label path="file">Select a file to upload</label></td>
-            <td><input type="file" name="file" th:field="*{file}"/></td>
-        </tr>
-        <tr>
-            <td><input type="submit" value="Submit" /></td>
-        </tr>
-    </table>
-</form>
+<nav class="nav bg-body-tertiary navbar-dark bg-primary">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between w-60" style="margin-left: 45%">
+            <a class="navbar-brand justify-content-center " th:href="@{/doc/main}">
+                <img th:src="@{/resources/logo.png}" alt="MiniDocFlow">
+            </a>
+            <div class="d-flex justify-content-end">
+                <a class="nav-link d-flex justify-content-end link-light"
+                   th:href="@{/author/{username}(username=${username})}" th:text="${username}"> </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container-sm justify-content-center mt-5 border rounded">
+
+    <form class="form-group" th:method="POST" th:action="@{/doc/{id}/update(id=${documentPOJO.documentId})}" enctype="multipart/form-data"
+          th:object="${documentPOJO}">
+        <div class="d-flex justify-content-center mt-3 mb-5">
+            <label class="mx-2 col-sm-3">Document Name:</label>
+            <label class="mx-2 col-sm-2" th:text="${docName}">nameOfDoc.txt</label>
+        </div>
+        <div class="d-flex row justify-content-center mt-3 mb-5">
+            <label class="mx-2 col-sm-1" for="file">Document:</label>
+            <div class="mx-2 col-sm-3">
+                <input class="form-control" type="file" th:field="*{file}" id="file" required/>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mb-3">
+            <button type="submit" class="btn btn-primary col-sm-2">Update</button>
+        </div>
+    </form>
+
+</div>
 </body>
 </html>
