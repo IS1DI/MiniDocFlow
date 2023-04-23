@@ -8,12 +8,17 @@
           crossorigin="anonymous">
 </head>
 <body>
-<!--<p th:if="${registerError}" class="error">Wrong user or password</p> -->
 <nav class="nav bg-body-tertiary navbar-dark bg-primary">
     <div class="container-fluid">
-        <a class="navbar-brand d-flex justify-content-center" th:href="@{/doc/main}">
-            <img src="/WEB-INF/views/resources/logo.png" alt="MiniDocFlow" width="150" height="39">
-        </a>
+        <div class="d-flex justify-content-between w-60" style="margin-left: 45%">
+            <a class="navbar-brand justify-content-center " th:href="@{/doc/main}">
+                <img th:src="@{/resources/logo.png}" alt="MiniDocFlow">
+            </a>
+            <div class="d-flex justify-content-end">
+                <a class="nav-link d-flex justify-content-end link-light"
+                   th:href="@{/author/{username}(username=${username})}" th:text="${username}"> </a>
+            </div>
+        </div>
     </div>
 </nav>
 

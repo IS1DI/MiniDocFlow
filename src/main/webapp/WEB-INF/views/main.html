@@ -12,6 +12,7 @@
 <nav class="nav bg-body-tertiary navbar-dark bg-primary">
     <div class="container-fluid">
         <div class="d-flex justify-content-between w-60" style="margin-left: 45%">
+            <!-- TODO search button -->
             <a class="navbar-brand justify-content-center " th:href="@{/doc/main}">
                 <img th:src="@{/resources/logo.png}" alt="MiniDocFlow">
             </a>
@@ -52,7 +53,7 @@
             <td>
                 <a th:text="${doc.author}" th:href="@{/author/{id}(id=${doc.author})}"></a>
             </td>
-            <td th:text="${#temporals.formatISO(doc.dateIntro)}"></td>
+            <td th:text="${#temporals.formatISO(doc.dateIntro)}"> <!-- TODO date format --> </td>
         </tr>
         </tbody>
     </table>
