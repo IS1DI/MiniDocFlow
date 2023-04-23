@@ -1,6 +1,10 @@
 package MiniDFlow.entity;
 
 
+import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+
 import javax.persistence.*;
 
 import java.io.Serializable;
@@ -18,12 +22,14 @@ public class Author implements Serializable {
     private int id;
 
     @Column(name = "username", unique = true)
+    @Field
     private String username;
 
     @Column(name = "password")
     private String password;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "versionAuthor")
+    @ContainedIn
     private Set<DocumentVersion> versions;
 
     public List<Authority> getAuthorities() {

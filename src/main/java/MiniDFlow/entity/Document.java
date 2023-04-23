@@ -1,6 +1,7 @@
 package MiniDFlow.entity;
 
 import org.hibernate.annotations.Formula;
+import org.hibernate.search.annotations.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,10 +18,12 @@ public class Document implements Serializable {
     private Integer id;
 
     @Column(name = "documentName")
+    @Field(store = Store.YES)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author", nullable = false)
+    @IndexedEmbedded
     private Author author;
 
     @Formula(value = "(select max(dv.version) from DocumentVersion dv where dv.documentId = documentId)")
@@ -31,6 +34,7 @@ public class Document implements Serializable {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "documentId")
     private RegisterCard registerCard;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "documentId")
+    @ContainedIn
     private Set<DocumentVersion> documentVersion;
 
     public Document() {
