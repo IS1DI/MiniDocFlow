@@ -3,18 +3,22 @@ package MiniDFlow.controllers;
 import MiniDFlow.POJO.DocumentPOJO;
 import MiniDFlow.POJO.DocumentUpdatePOJO;
 import MiniDFlow.entity.projection.DocumentView;
+import MiniDFlow.security.JdbcAuthorService;
 import MiniDFlow.service.AuthorService;
 import MiniDFlow.service.DocumentService;
+import javax.validation.Valid;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.Principal;
 
 
 @Controller
@@ -24,51 +28,65 @@ public class ApiDocumentController {
     private DocumentService documentService;
     @Autowired
     private AuthorService authorService;
+    @Autowired
+    JdbcAuthorService userDetailsManager;
     @PostMapping("/new")
     public String newDocumentSave(
-            @ModelAttribute("documentPOJO") DocumentPOJO documentPOJO,
+            @Valid @ModelAttribute("documentPOJO") DocumentPOJO documentPOJO,
+            BindingResult result,
             Authentication authentication
             ) throws IOException {
+        if(result.hasErrors()){
+            return "fileUploadView";
+        }
         documentService.createNewDocument(documentPOJO,authorService.findByUsername(authentication.getName()));
         return "redirect:/doc/main";
     }
 
     @GetMapping("/new")
-    public String newDocumentView(Model model){
-        model.addAttribute(new DocumentPOJO());
+    public String newDocumentView(Model model, Principal principal){
+        model.addAttribute("username", principal.getName());
+        model.addAttribute("documentPOJO",new DocumentPOJO());
         return "fileUploadView";
     }
 
 
     @PostMapping("/update")
-    public String updateDocumentById(@ModelAttribute("documentUpdatePOJO") DocumentUpdatePOJO documentUpdatePOJO, Authentication authentication) throws IOException {
+    public String updateDocumentById(@Valid @ModelAttribute("documentUpdatePOJO") DocumentUpdatePOJO documentUpdatePOJO, Authentication authentication) throws IOException {
         documentService.updateDocumentById(documentUpdatePOJO,authorService.findByUsername(authentication.getName()));
         return "redirect:/doc/main";
     }
     @PostMapping("{id}/update")
-    public String updateDocumentByParamId(@PathVariable("id")int id,@ModelAttribute("documentUpdatePOJO") DocumentUpdatePOJO documentUpdatePOJO, Authentication authentication) throws IOException {
+    public String updateDocumentByParamId(@PathVariable("id")int id,
+                                          @ModelAttribute("documentUpdatePOJO") DocumentUpdatePOJO documentUpdatePOJO,
+                                          Authentication authentication
+                                         ) throws IOException {
         documentUpdatePOJO.setDocumentId(id);
         documentService.updateDocumentById(documentUpdatePOJO,authorService.findByUsername(authentication.getName()));
         return "redirect:/doc/main";
     }
 
     @GetMapping("{id}/update")
-    public String getUpdateViewById(@PathVariable("id") int id,Model model){
+    public String getUpdateViewById(@PathVariable("id") int id,Model model,Principal principal){
         DocumentView documentView = documentService.getDocById(id,-1);
         model.addAttribute("documentPOJO",new DocumentUpdatePOJO(documentView.getDocumentId()));
         model.addAttribute("docName",documentView.getDocumentName());
+        model.addAttribute("username",principal.getName());
         return "updateView";
     }
     @GetMapping("/update")
-    public String getUpdateView(Model model){
+    public String getUpdateView(Model model, Principal principal){
+        model.addAttribute("username",principal.getName());
         model.addAttribute(new DocumentUpdatePOJO());
         return "updateByIdView";
     }
 
     @GetMapping("/{id}")
     public String getFileById(Model model,
-                              @PathVariable("id") int id){
+                              @PathVariable("id") int id,
+                              Principal principal){
         model.addAttribute("doc",documentService.getDocById(id,-1));
+        model.addAttribute("username", principal.getName());
         return "document";
     }
     @DeleteMapping("/{id}")
@@ -79,8 +97,9 @@ public class ApiDocumentController {
     }
 
     @GetMapping("/{id}/delete")
-    public String getDeleteView(@PathVariable("id") int id, Model model){
+    public String getDeleteView(@PathVariable("id") int id, Model model, Principal principal){
         model.addAttribute("doc",documentService.getDocById(id,-1));
+        model.addAttribute("username",principal.getName());
         return "deleteView";
     }
 
@@ -97,11 +116,6 @@ public class ApiDocumentController {
             throw new RuntimeException(e);
         }
         return "redirect:/doc/main";
-    }
-    @GetMapping("/main")
-    public String mainPage(Model model){
-        model.addAttribute(documentService.getAllDocViews());
-        return "main";
     }
 
 }

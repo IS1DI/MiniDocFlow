@@ -18,7 +18,7 @@ public class Document implements Serializable {
     private Integer id;
 
     @Column(name = "documentName")
-    @Field(store = Store.YES)
+    @Field(store = Store.YES,analyzer = @Analyzer(definition = "docVerAnalyzer"))
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)

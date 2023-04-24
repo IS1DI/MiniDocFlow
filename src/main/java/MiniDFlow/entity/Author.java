@@ -1,9 +1,9 @@
 package MiniDFlow.entity;
 
 
+import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
 
@@ -22,7 +22,7 @@ public class Author implements Serializable {
     private int id;
 
     @Column(name = "username", unique = true)
-    @Field
+    @Field(analyzer = @Analyzer(definition = "docVerAnalyzer"))
     private String username;
 
     @Column(name = "password")

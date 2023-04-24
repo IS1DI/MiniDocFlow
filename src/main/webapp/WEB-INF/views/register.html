@@ -20,14 +20,14 @@
 
     <form th:action="@{/reg}" th:method="POST" th:object="${userRegForm}">
         <div class="mb-4 mt-5 justify-content-center d-flex"><h2>Register</h2></div>
-        <div >
+        <div class="mb-3">
             <input type="text" placeholder="Username"
                    th:class="${#fields.hasErrors('username')}?'form-control  is-invalid':'form-control'"
                    id="username" th:field="*{username}" autofocus="autofocus" required/>
             <div th:if="${#fields.hasErrors('username')}" class="invalid-feedback" th:errors="*{username}">
             </div>
         </div>
-        <div>
+        <div class="mb-5">
             <input type="text" placeholder="Password"
                    th:class="${#fields.hasErrors('password')}?'form-control  is-invalid':'form-control'"
                    id="password" th:field="*{password}" autofocus="autofocus" required/>
@@ -38,6 +38,7 @@
             <button class="btn btn-outline-primary" onclick="window.location.href='/login'">Sign in</button>
             <button class="btn btn-primary" type="submit">Register</button>
         </div>
+
     </form>
 </div>
 </body>

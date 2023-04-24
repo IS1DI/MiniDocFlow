@@ -26,9 +26,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin().defaultSuccessUrl("/doc/main",true);
         http.csrf().disable();
         http.authorizeRequests()
-                .mvcMatchers("/doc/**").permitAll()
+                .mvcMatchers("/").permitAll()
+                .mvcMatchers("/doc/main/**").permitAll()
                 .mvcMatchers("/reg/**").permitAll()
-                .mvcMatchers("/hello").permitAll()
                 .mvcMatchers("/resources/**").permitAll()
                 .mvcMatchers("/admin**").hasRole("ADMIN")
                 .anyRequest().authenticated();

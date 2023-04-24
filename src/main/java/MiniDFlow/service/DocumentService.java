@@ -2,6 +2,7 @@ package MiniDFlow.service;
 
 import MiniDFlow.POJO.DocumentPOJO;
 import MiniDFlow.POJO.DocumentUpdatePOJO;
+import MiniDFlow.POJO.Page;
 import MiniDFlow.entity.Author;
 import MiniDFlow.entity.Document;
 import MiniDFlow.entity.DocumentVersion;
@@ -10,13 +11,16 @@ import MiniDFlow.entity.projection.DocumentView;
 import MiniDFlow.repository.DocumentRepository;
 import MiniDFlow.repository.DocumentVersionRepository;
 import MiniDFlow.repository.RegisterCardRepository;
+import MiniDFlow.repository.SearchDocumentVersionRepository;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -27,6 +31,8 @@ public class DocumentService {
     private RegisterCardRepository registerCardRepository;
     @Autowired
     private DocumentVersionRepository documentVersionRepository;
+    @Autowired
+    private SearchDocumentVersionRepository searchRepository;
 
     @Transactional
     public void createNewDocument(DocumentPOJO documentPOJO, Author author) throws IOException {
@@ -37,11 +43,6 @@ public class DocumentService {
         documentRepository.create(document = new Document(docName, author));
         registerCardRepository.create(new RegisterCard(document, documentPOJO.getDocumentIntroNumber(), Instant.now()));
         documentVersionRepository.create(new DocumentVersion(document, author, documentPOJO.getFile().getBytes()));
-    }
-
-    @Transactional
-    public List<DocumentView> getAllDocViews() {
-        return documentRepository.getAllDocViews();
     }
 
     @Transactional
@@ -94,4 +95,30 @@ public class DocumentService {
     public List<DocumentView> getAllDocViewsByAuthor(Author author) {
         return documentRepository.getAllDocViewsByAuthor(author);
     }
+    @Transactional
+    public List<DocumentView> searchDocs(String query, int limit,boolean searchInTexts) throws ParseException {
+        return searchRepository.searchByDocumentName(query,limit).stream().map(
+                docVer ->
+                        new DocumentView(
+                                docVer.getDocumentId().getId(),
+                                docVer.getDocumentId().getName(),
+                                docVer.getVersionAuthor().getUsername(),
+                                docVer.getVersion(),
+                                docVer.getDocumentId().isExist(),
+                                docVer.getDocumentId().getRegisterCard().getDateIntro(),
+                                docVer.getDocumentId().getRegisterCard().getDocumentIntroNumber()
+                        )
+        ).collect(Collectors.toList());
+    }
+    @Transactional
+    public Page<DocumentView> getPage(int p, int limit){
+        Page<DocumentView> page = new Page<>();
+        page.setMaxResults((int)documentRepository.getCount());
+        page.setLastPage( (page.getMaxResults()%limit==0)?(page.getMaxResults()/limit):((int)Math.ceil((double) page.getMaxResults()/limit)));
+        page.setCurPage(p>page.getLastPage()?(page.getLastPage()):(Math.max(p, 1)));
+        page.setLimitPage(Math.max(limit, 3));
+        page.setContent(documentRepository.getPage((page.getCurPage()-1)*page.getLimitPage(),page.getLimitPage()));
+        return page;
+    }
+    //TODO pagination
 }

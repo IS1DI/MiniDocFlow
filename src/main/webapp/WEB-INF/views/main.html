@@ -57,8 +57,38 @@
         </tr>
         </tbody>
     </table>
-<div th:if="${user!=null}" class="d-flex justify-content-end fixed-bottom mb-3 ">
+<div class="fixed-bottom">
+<nav aria-label="page navigation">
+    <ul class="pagination justify-content-center">
+        <li th:class="${curPage.compareTo(1)<=0}?'page-item disabled':'page-item'">
+            <a class="page-link" th:href="@{/doc/main(p=${curPage==1}?${curPage}:${curPage}-1,l=${limitPage})}" tabindex="-1" aria-disabled="true">Previous</a>
+        </li>
+
+
+        <li th:class="${curPage.equals(1)}?'page-item active':'page-item'">
+            <span th:if="${curPage.equals(1)}" class="page-link" th:text="1"></span>
+            <a th:if="${!curPage.equals(1)}" class="page-link" th:text="1" th:href="@{/doc/main(p=1,l=${limitPage})}"></a>
+        </li>
+        <li th:class="${!curPage.equals(1)&&!curPage.equals(lastPage)}?'page-item active':'page-item'">
+            <span th:if="${curPage.equals(1)||curPage.equals(lastPage)}" class="page-link" th:text="'...'"></span>
+            <a th:if="${!curPage.equals(1)&&!curPage.equals(lastPage)}" class="page-link" th:text="${curPage}" th:href="@{/doc/main(p=${curPage},l=${limitPage})}"></a>
+        </li>
+        <li th:class="${curPage.equals(lastPage)}?'page-item active':'page-item'">
+            <span th:if="${curPage.equals(lastPage)}" class="page-link" th:text="${lastPage}"></span>
+            <a th:if="${!curPage.equals(lastPage)}" class="page-link" th:text="${lastPage}" th:href="@{/doc/main(p=${lastPage},l=${limitPage})}"></a>
+        </li>
+
+
+        <li th:class="${curPage.compareTo(lastPage)>=0}?'page-item disabled':'page-item'">
+            <a class="page-link" th:href="@{/doc/main(p=${curPage>=lastPage}?${lastPage}:${curPage}+1,l=${limitPage})}" tabindex="-1" aria-disabled="true">Next</a>
+        </li>
+    </ul>
+</nav>
+
+<div th:if="${user!=null}" class="d-flex justify-content-end mb-3 ">
     <button class="btn btn-primary d-flex me-3" onclick="window.location.href='/doc/new'">Load new</button>
 </div>
+</div>
+<!--TODO pagination -->
 </body>
 </html>

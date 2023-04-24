@@ -3,13 +3,14 @@ package MiniDFlow.security;
 import MiniDFlow.entity.Author;
 import MiniDFlow.service.AuthorService;
 import MiniDFlow.service.AuthoritiesService;
-import javassist.bytecode.DuplicateMemberException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
+
+import java.security.Principal;
 
 @Service
 public class JdbcAuthorService implements UserDetailsManager {
@@ -25,11 +26,7 @@ public class JdbcAuthorService implements UserDetailsManager {
     @Override
     public void createUser(UserDetails userDetails) {
         Author author = new Author(userDetails.getUsername(), encoder.encode(userDetails.getPassword()));
-        try {
             authorService.create(author,userDetails.getAuthorities());
-        } catch (DuplicateMemberException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
@@ -51,12 +48,25 @@ public class JdbcAuthorService implements UserDetailsManager {
 
     @Override
     public boolean userExists(String s) {
-        return authorService.exist(s);
+        if(s!=null) {
+            return authorService.exist(s);
+        }
+        return false;
     }
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return new User(authorService.findByUsername(s));
+        if(s!=null) {
+            return new User(authorService.findByUsername(s));
+        }
+        return null;
+
+    }
+    public UserDetails loadUserByPrincipal(Principal principal) throws UsernameNotFoundException {
+        if(principal!=null) {
+            return new User(authorService.findByUsername(principal.getName()));
+        }
+        return null;
 
     }
 

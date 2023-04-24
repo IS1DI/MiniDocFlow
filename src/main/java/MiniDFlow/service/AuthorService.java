@@ -4,7 +4,6 @@ import MiniDFlow.entity.Author;
 import MiniDFlow.entity.Authority;
 import MiniDFlow.repository.AuthorRepository;
 import MiniDFlow.repository.AuthorityRepository;
-import javassist.bytecode.DuplicateMemberException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,7 +20,7 @@ public class AuthorService {
     private AuthorityRepository authorityRepository;
 
     @Transactional
-    public void create(Author author, Collection<? extends GrantedAuthority> grantedAuthorities) throws DuplicateMemberException {
+    public void create(Author author, Collection<? extends GrantedAuthority> grantedAuthorities){
         if(authorRepository.getByUsername(author.getUsername()).isEmpty()){
             authorRepository.create(author);
             grantedAuthorities.stream().map(a -> new Authority(a.getAuthority(), author)).forEach(authority -> authorityRepository.create(authority));

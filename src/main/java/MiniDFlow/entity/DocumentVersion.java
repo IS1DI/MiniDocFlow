@@ -1,7 +1,6 @@
 package MiniDFlow.entity;
 
 
-import MiniDFlow.lucene.bridges.ByteArrStringBridge;
 import org.hibernate.search.annotations.*;
 
 import javax.persistence.*;
@@ -13,7 +12,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "DocumentVersion")
 @Indexed
-@Analyzer(definition = "docVerAnalyzer")
 public class DocumentVersion implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +29,7 @@ public class DocumentVersion implements Serializable {
     private Author versionAuthor;
 
     @Column(name = "content")
-    @Field
+    @Field(store = Store.YES,analyzer = @Analyzer(definition = "docVerAnalyzer"))
     private byte[] content;
 
     @Column(name = "version")

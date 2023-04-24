@@ -1,5 +1,6 @@
 package MiniDFlow.repository;
 
+import MiniDFlow.POJO.Page;
 import MiniDFlow.entity.Author;
 import MiniDFlow.entity.Document;
 import javax.persistence.TypedQuery;
@@ -8,6 +9,7 @@ import javax.transaction.Transactional;
 import MiniDFlow.entity.projection.DocumentView;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -88,5 +90,58 @@ public class DocumentRepository{
                 """,DocumentView.class);
         q.setParameter("aid",author);
         return q.getResultList();
+    }
+
+    @Transactional
+    public Page<DocumentView> getPageByAuthor(Author author,int startIndex, int limit) {
+        Query<Integer> qu = getSession().createQuery("select count(d) from Document d where d.author=:aid",Integer.class);
+        qu.setParameter("aid",author);
+        int maxResults = qu.uniqueResult();
+        TypedQuery<DocumentView> q = getSession().createQuery("""
+                select new MiniDFlow.entity.projection.DocumentView(
+                    d.id,
+                    d.name,
+                    d.author.username,
+                    d.lastVersion,
+                    d.isExist,
+                    d.registerCard.dateIntro,
+                    d.registerCard.documentIntroNumber
+                )
+                from Document d
+                where d.author = :aid
+                order by d.id
+                """,DocumentView.class);
+        q.setParameter("aid",author);
+        q.setFirstResult(startIndex);
+        q.setMaxResults(limit);
+        List<DocumentView> list;
+        return new Page<DocumentView>(list = q.getResultList(),maxResults,maxResults/limit);
+    }
+    @Transactional
+    public List<DocumentView> getPage(int startIndex, int limit){
+
+
+        Query<DocumentView> q = getSession().createQuery("""
+                select new MiniDFlow.entity.projection.DocumentView(
+                    d.id,
+                    d.name,
+                    d.author.username,
+                    d.lastVersion,
+                    d.isExist,
+                    d.registerCard.dateIntro,
+                    d.registerCard.documentIntroNumber
+                )
+                from Document d
+                order by d.id
+                """,DocumentView.class);
+
+
+        q.setFirstResult(startIndex);
+        q.setMaxResults(limit);
+        return q.getResultList();
+    }
+    @Transactional
+    public long getCount(){
+        return getSession().createQuery("select count(d) from Document d",Long.class).uniqueResult();
     }
 }

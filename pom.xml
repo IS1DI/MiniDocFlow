@@ -85,13 +85,18 @@
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
-            <version>7.1.0</version>
+            <version>5.5.4</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-queryparser</artifactId>
-            <version>7.1.0</version>
+            <version>5.5.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers-common</artifactId>
+            <version>5.5.4</version>
         </dependency>
 
         <!-- PostgresQL -->
@@ -108,6 +113,17 @@
             <artifactId>hibernate-core</artifactId>
             <version>5.3.27.Final</version>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>6.2.4.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-search-orm</artifactId>
+            <version>5.11.12.Final</version>
+        </dependency>
+
 
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
